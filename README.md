@@ -1,28 +1,28 @@
-# NAME                          
+# NAME
 
 Games::Growth::Model::Character - A character growth and status management module
 
-# DESCRIPTION                   
+# DESCRIPTION
 
-Games::Growth::Model::Character is a character status and growth model.  
+Games::Growth::Model::Character is a character status and growth model.
 
 This class manages the data and logic associated with a character.
 It represents a character's attributes and behaviors in a game or simulation.
-Specifically, it handles the character's status (such as atk, def, agi, etc.), growth system (including jobs, level-ups, and stat progression), and other character-specific information.  
+Specifically, it handles the character's status (such as atk, def, agi, etc.), growth system (including jobs, level-ups, and stat progression), and other character-specific information.
 
-HP and MP are not supported. Instead, this class uses vit (durability) and skl (skill) parameters to derive various aspects of character capability.  
+HP and MP are not supported. Instead, this class uses vit (durability) and skl (skill) parameters to derive various aspects of character capability.
 
-# USAGE                         
+# USAGE
 
 This module is designed to be used in a game or simulation context.
-It provides methods for managing character attributes, growth, and status effects.  
+It provides methods for managing character attributes, growth, and status effects.
 
-The module is intended for use by developers creating games or simulations that require character management.  
+The module is intended for use by developers creating games or simulations that require character management.
 
-# SEE ALSO                      
+# SEE ALSO
 
 - Games::Growth::Model::Character
-- Games::Growth::Model::Character::Job  
+- Games::Growth::Model::Character::Job
 
 # SET UP
 
