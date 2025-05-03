@@ -1,7 +1,6 @@
 requires 'Function::Parameters';
 requires 'Function::Return';
 requires 'Types::Standard';
-requires 'YAML::XS';
 
 on 'develop' => sub {
     requires 'Data::Dumper';
