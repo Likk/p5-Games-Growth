@@ -14,7 +14,25 @@ use List::Util qw/shuffle min max/;
 
 =head1 DESCRIPTION
 
-  Games::Growth::Model::Character is a character model for Games::Growth.
+  Games::Growth::Model::Character::Job is a lightweight library designed for game development.
+  It evaluates a character's status and determines an appropriate job (class) name based on specific status conditions.
+
+  This library receives a character status structure from Games::Growth::Model::Character
+  It checks if the character’s various parameters meet certain thresholds and, if they do, returns the corresponding job name.
+
+  It is ideal for games that require:
+    - Dynamic class assignment based on character growth
+    - Automatic job (class) evaluation systems
+    - Flexible and expandable class condition settings
+
+=head1 USAGE
+
+  This module is designed to be used in conjunction with the Games::Growth::Model::Character module.
+  It provides a simple interface for determining a character's job based on their status parameters.
+
+  The module is designed to be flexible and extensible, allowing users to customize job conditions and names as needed.
+
+  To use this module, simply call the C<search_job> method with a hash reference containing the character's status parameters.
 
 =head1 SYNOPSIS
 
@@ -27,6 +45,7 @@ use List::Util qw/shuffle min max/;
     skl => 5,
   };
   my $job = Games::Growth::Model::Character::Job->search_job($status);
+  print $job->{name}; # => "Striker"
 
 =head1 PACKAGE GLOBAL VARIABLES
 

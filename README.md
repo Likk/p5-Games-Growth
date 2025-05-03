@@ -19,6 +19,16 @@ It provides methods for managing character attributes, growth, and status effect
 
 The module is intended for use by developers creating games or simulations that require character management.
 
+# Key Points
+  - Input: Character's status struct (e.g., strength, intelligence, etc.)
+  - Output: A string representing the job/class name
+  - Flexibility: Easy to extend or customize condition rules
+  - No Dependencies: Designed to be lightweight with minimal external dependencies
+
+# Intended Audience
+  - Game developers creating RPGs or simulation games
+  - Projects that require character growth and class evolution systems
+
 # SEE ALSO
 
 - Games::Growth::Model::Character
