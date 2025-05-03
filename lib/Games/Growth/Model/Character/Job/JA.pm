@@ -17,6 +17,10 @@ use utf8;
 
   SEE ALSO $Games::Growth::Model::Character::Job::JOB_LIST
 
+=head2 INITIAL_JOB
+
+  SEE ALSO $Games::Growth::Model::Character::Job::INITIAL_JOB
+
 =cut
 
 local $Games::Growth::Model::Character::Job::JOB_LIST = +{ # 職業リスト。適当にいじってください
@@ -61,3 +65,9 @@ local $Games::Growth::Model::Character::Job::JOB_LIST = +{ # 職業リスト。�
         ],
     },
 };
+
+local $Games::Growth::Model::Character::Job::JOB_LIST::INITIAL_JOB = +{
+    name  => 'ルーキー',
+    score => 0,
+};
+

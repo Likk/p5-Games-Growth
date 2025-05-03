@@ -21,7 +21,7 @@ describe 'Games::Growth::Model::Character::Job#initial_job' => sub {
     describe 'case change to INITIAL_JOB' => sub {
         before_all "update INITIAL_JOB" => sub {
             $hash->{INITIAL_JOB} = $Games::Growth::Model::Character::Job::INITIAL_JOB = {
-                name  => 'Adventurer',
+                name  => 'Unassigned',
                 score => 5,
             };
         };
@@ -30,14 +30,9 @@ describe 'Games::Growth::Model::Character::Job#initial_job' => sub {
         };
 
         it 'should reflect changes to INITIAL_JOB' => sub {
-            local $Games::Growth::Model::Character::Job::INITIAL_JOB = {
-                name  => 'Adventurer',
-                score => 5,
-            };
-
             my $job = Games::Growth::Model::Character::Job->initial_job();
             is $job, hash {
-                field 'name'  => 'Adventurer';
+                field 'name'  => 'Unassigned';
                 field 'score' => 5;
                 end;
             }, 'returns updated initial job';

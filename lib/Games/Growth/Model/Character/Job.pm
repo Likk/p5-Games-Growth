@@ -94,7 +94,7 @@ our $JOB_LIST = +{
             +{ params => [qw/atk skl/], names => [qw/Gladiator Champion    Swordmaster/ ]},
             +{ params => [qw/def ldr/], names => [qw/Shooter   Sweeper     Sentinel/    ]},
             +{ params => [qw/def agi/], names => [qw/Stormer   Interceptor Juggernaut/  ]},
-            +{ params => [qw/def vit/], names => [qw/tank      fortress    Aegis/       ]},
+            +{ params => [qw/def vit/], names => [qw/Tank      Fortress    Aegis/       ]},
             +{ params => [qw/def skl/], names => [qw/Debuffer  Phalanx     Unbreakable/ ]},
             +{ params => [qw/ldr agi/], names => [qw/Messenger Herald      Warbird/     ]},
             +{ params => [qw/ldr vit/], names => [qw/Supporter Soldier     Bastion/     ]},
@@ -121,7 +121,7 @@ our $JOB_LIST = +{
 
   Default value:
      $INITIAL_JOB = {
-        name  => 'ルーキー',
+        name  => 'Adventurer',
         score => 0,
      }
 
@@ -130,7 +130,7 @@ our $JOB_LIST = +{
 =cut
 
 our $INITIAL_JOB = +{
-    name  => 'ルーキー',
+    name  => 'Adventurer',
     score => 0,
 };
 

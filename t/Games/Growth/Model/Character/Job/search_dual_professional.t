@@ -24,8 +24,8 @@ describe 'about Games::Growth::Model::Character::Job#search_dual_professional' =
 
         it 'should return HashRef' => sub {
             my $job_status = Games::Growth::Model::Character::Job->search_dual_professional($hash->{status});
-            is $job_status->{name}, 'ソードマスター', 'search_dual_professional name';
-            is $job_status->{score}, 42,          'search_dual_professional score';
+            is $job_status->{name}, 'Swordmaster', 'search_dual_professional name';
+            is $job_status->{score}, 42,           'search_dual_professional score';
         };
     };
 
@@ -43,8 +43,8 @@ describe 'about Games::Growth::Model::Character::Job#search_dual_professional' =
 
         it 'should return HashRef' => sub {
             my $job_status = Games::Growth::Model::Character::Job->search_dual_professional($hash->{status});
-            is $job_status->{name}, 'カウンター', 'search_dual_professional name';
-            is $job_status->{score}, 22,            'search_dual_professional score';
+            is $job_status->{name}, 'Counter', 'search_dual_professional name';
+            is $job_status->{score}, 22,       'search_dual_professional score';
         };
     };
 
@@ -61,9 +61,9 @@ describe 'about Games::Growth::Model::Character::Job#search_dual_professional' =
         };
 
         it 'should return HashRef' => sub {
-            my   $job_status = Games::Growth::Model::Character::Job->search_dual_professional($hash->{status});
-            is   $job_status->{score}, 12,           'search_dual_professional score';
-            like $job_status->{name},  'アーチャー', 'search_dual_professional name';
+            my $job_status = Games::Growth::Model::Character::Job->search_dual_professional($hash->{status});
+            is $job_status->{score}, 12,       'search_dual_professional score';
+            is $job_status->{name},  'Archer', 'search_dual_professional name';
         };
     };
 };

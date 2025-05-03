@@ -24,8 +24,8 @@ describe 'about Games::Growth::Model::Character::Job#search_single_professional'
 
         it 'should return HashRef' => sub {
             my $job_status = Games::Growth::Model::Character::Job->search_single_professional($hash->{status});
-            is $job_status->{name}, 'ブレイカー', 'search_single_professional name';
-            is $job_status->{score}, 38,          'search_single_professional score';
+            is $job_status->{name}, 'Ravager', 'search_single_professional name';
+            is $job_status->{score}, 38,       'search_single_professional score';
         };
     };
 
@@ -43,8 +43,8 @@ describe 'about Games::Growth::Model::Character::Job#search_single_professional'
 
         it 'should return HashRef' => sub {
             my $job_status = Games::Growth::Model::Character::Job->search_single_professional($hash->{status});
-            is $job_status->{name}, 'ホプロマクス', 'search_single_professional name';
-            is $job_status->{score}, 28,            'search_single_professional score';
+            is $job_status->{name}, 'Hoplite', 'search_single_professional name';
+            is $job_status->{score}, 28,       'search_single_professional score';
         };
     };
 
@@ -61,9 +61,9 @@ describe 'about Games::Growth::Model::Character::Job#search_single_professional'
         };
 
         it 'should return HashRef' => sub {
-            my   $job_status = Games::Growth::Model::Character::Job->search_single_professional($hash->{status});
-            is   $job_status->{score}, 18,           'search_single_professional score';
-            like $job_status->{name},  'ウォーリア', 'search_single_professional name';
+            my $job_status = Games::Growth::Model::Character::Job->search_single_professional($hash->{status});
+            is $job_status->{score}, 18,        'search_single_professional score';
+            is $job_status->{name},  'Warrior', 'search_single_professional name';
         };
     };
 
@@ -80,9 +80,9 @@ describe 'about Games::Growth::Model::Character::Job#search_single_professional'
         };
 
         it 'should return HashRef' => sub {
-            my   $job_status = Games::Growth::Model::Character::Job->search_single_professional($hash->{status});
-            is   $job_status->{score}, 8,                                                                           'search_single_professional score';
-            like $job_status->{name},  qr/スプリンター/, 'search_single_professional name';
+            my $job_status = Games::Growth::Model::Character::Job->search_single_professional($hash->{status});
+            is $job_status->{score}, 8,          'search_single_professional score';
+            is $job_status->{name},  'Sprinter', 'search_single_professional name';
         };
     };
 };

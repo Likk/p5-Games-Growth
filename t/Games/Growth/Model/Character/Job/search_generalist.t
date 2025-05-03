@@ -24,8 +24,8 @@ describe 'about Games::Growth::Model::Character::Job#search_generalist' => sub {
 
         it 'should return HashRef' => sub {
             my $job_status = Games::Growth::Model::Character::Job->search_generalist($hash->{status});
-            is $job_status->{name}, 'バランサー', 'search_generalist name';
-            is $job_status->{score}, 10,           'search_generalist score';
+            is $job_status->{name}, 'Balancer', 'search_generalist name';
+            is $job_status->{score}, 10,        'search_generalist score';
         };
     };
 
@@ -43,8 +43,8 @@ describe 'about Games::Growth::Model::Character::Job#search_generalist' => sub {
 
         it 'should return HashRef' => sub {
             my $job_status = Games::Growth::Model::Character::Job->search_generalist($hash->{status});
-            is $job_status->{name}, 'ハーモナイザー', 'search_generalist name';
-            is $job_status->{score}, 20,              'search_generalist score';
+            is $job_status->{name}, 'Harmonizer', 'search_generalist name';
+            is $job_status->{score}, 20,          'search_generalist score';
         };
     };
 };
