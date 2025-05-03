@@ -70,45 +70,45 @@ use List::Util qw/shuffle min max/;
 
 =cut
 
-our $JOB_LIST = +{ # 職業リスト。適当にいじってください
+our $JOB_LIST = +{
     single => +{
         threshold_point => [8, 18, 28, 38],
         distance        => [1,  2,  4,  6],
         entries => [
-            +{ params => [qw/atk/], names => [qw/アタッカー     ブレイバー      バーサーカー    ブレイカー/    ], }, # 攻撃特化
-            +{ params => [qw/def/], names => [qw/ディフェンダー アーマーナイト  ホプロマクス    パラディン/    ], }, # 防御特化
-            +{ params => [qw/ldr/], names => [qw/コマンダー     ストラテジスト  ジェネラル      マーセナル/    ], }, # 指揮特化
-            +{ params => [qw/agi/], names => [qw/スプリンター   スピードスター  ファントム      テンペスト/    ], }, # 敏捷特化
-            +{ params => [qw/vit/], names => [qw/ファイター     ウォーリア      ヴァイキング    ガーディアン/  ], }, # 耐久特化
-            +{ params => [qw/skl/], names => [qw/デュエリスト   アサイラント    スレイヤー      エグゼキュータ/], }, # 技術特化
+            +{ params => [qw/atk/], names => [qw/Striker   Braveheart Berserker Ravager  /]},
+            +{ params => [qw/def/], names => [qw/Defender  Ironclad   Hoplite   Paladin  /]},
+            +{ params => [qw/ldr/], names => [qw/Commander Strategist General   Marshal  /]},
+            +{ params => [qw/agi/], names => [qw/Sprinter  Speedster  Phantom   Tempest  /]},
+            +{ params => [qw/vit/], names => [qw/Fighter   Warrior    Viking    Guardian /]},
+            +{ params => [qw/skl/], names => [qw/Duelist   Assassin   Slayer    Executor /]},
         ],
     },
     dual => +{
         threshold_point => [12, 22, 42],
         distance        => [ 2,  3,  4],
         entries => [
-            +{ params => [qw/atk def/], names => [qw/ブロウラー     クラッシャー        デストロイヤー/], },
-            +{ params => [qw/atk ldr/], names => [qw/ストライカー   スマッシャー        ヴァンキッシャー/], },
-            +{ params => [qw/atk agi/], names => [qw/アーチャー     ハンター            スナイパー/], },
-            +{ params => [qw/atk vit/], names => [qw/バースター     スカミッシャー      ランページャー/], },
-            +{ params => [qw/atk skl/], names => [qw/イケイケ       グラディエイター    ソードマスター/], },
-            +{ params => [qw/def ldr/], names => [qw/シューター     スイーパー          センチネル/], },
-            +{ params => [qw/def agi/], names => [qw/ストーマー     インターセプター    ジャガーノート/], },
-            +{ params => [qw/def vit/], names => [qw/壁             鉄壁                カチ勢/], },
-            +{ params => [qw/def skl/], names => [qw/デバッファー   ファランクス        アンブレイカブル/], },
-            +{ params => [qw/ldr agi/], names => [qw/メッセンジャー ヘラルド            ウォーバード/], },
-            +{ params => [qw/ldr vit/], names => [qw/サポーター     ソルジャー          バスティオン/], },
-            +{ params => [qw/ldr skl/], names => [qw/バッファー     サインメイカー      タクティシャン/], },
-            +{ params => [qw/agi vit/], names => [qw/スカウト       レンジャー          サバイバー/], },
-            +{ params => [qw/agi skl/], names => [qw/シーフ         アサシン            イレイサー/], },
-            +{ params => [qw/vit skl/], names => [qw/バインダー     カウンター          トリックスター/], },
+            +{ params => [qw/atk def/], names => [qw/Brawler   Crusher     Destroyer/   ]},
+            +{ params => [qw/atk ldr/], names => [qw/Striker   Smasher     Vanquisher/  ]},
+            +{ params => [qw/atk agi/], names => [qw/Archer    Hunter      Sniper/      ]},
+            +{ params => [qw/atk vit/], names => [qw/Burster   Skirmisher  Rampager/    ]},
+            +{ params => [qw/atk skl/], names => [qw/Gladiator Champion    Swordmaster/ ]},
+            +{ params => [qw/def ldr/], names => [qw/Shooter   Sweeper     Sentinel/    ]},
+            +{ params => [qw/def agi/], names => [qw/Stormer   Interceptor Juggernaut/  ]},
+            +{ params => [qw/def vit/], names => [qw/tank      fortress    Aegis/       ]},
+            +{ params => [qw/def skl/], names => [qw/Debuffer  Phalanx     Unbreakable/ ]},
+            +{ params => [qw/ldr agi/], names => [qw/Messenger Herald      Warbird/     ]},
+            +{ params => [qw/ldr vit/], names => [qw/Supporter Soldier     Bastion/     ]},
+            +{ params => [qw/ldr skl/], names => [qw/Buffer    Signmaker   Tactician/   ]},
+            +{ params => [qw/agi vit/], names => [qw/Scout     Ranger      Survivor/    ]},
+            +{ params => [qw/agi skl/], names => [qw/Thief     Assassin    Eraser/      ]},
+            +{ params => [qw/vit skl/], names => [qw/Binder    Counter     Trickster/   ]},
         ],
     },
     generalist => +{
         threshold_point => [10, 20, 30, 40],
         distance        => [3,   5,  5,  5], # max - min
         entries => [ #all parameter
-            +{ params => [qw//], names => [qw/バランサー ハーモナイザー オールマイティ ヒーロー/], },
+            +{ params => [qw//], names => [qw/Balancer Harmonizer Polymath Hero/]},
         ],
     },
 };
