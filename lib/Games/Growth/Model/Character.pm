@@ -29,7 +29,7 @@ use Games::Growth::Model::Character::Job;
 
 
   my $status = Games::Growth::Model::Character->initial_character();
-  $status->{exp} += 1000;
+  $status->{experience} += 1000;
   $status = Games::Growth::Model::Character->calculate_status($status); # Level up
 
 =head1 CONFIGURATION VARIABLES
@@ -146,13 +146,13 @@ fun initial_character (ClassName $class) :Return(HashRef) {
         vit => $DEFAULT_STATUS_VALUE,
     };
     return +{
-        exp    => 0,
-        level  => 1,
-        gen    => 0,
-        last_update => time(),
-        resume => [],
-        status => $status,
-        job    => $job,
+        experience         => 0,
+        level              => 1,
+        generation         => 0,
+        last_updated_epoch => time(),
+        resume             => [],
+        status             => $status,
+        job                => $job,
     };
 }
 
@@ -166,8 +166,8 @@ fun initial_character (ClassName $class) :Return(HashRef) {
     - Duration-based bonus depending on the time elapsed since last activity
 
   Parameters:
-    base_exp           => Int: The base experience points to start with.
-    last_update_epoch  => Int: The UNIX epoch time of the last update.
+    base_experience    => Int: The base experience points to start with.
+    last_updated_epoch => Int: The UNIX epoch time of the last update.
     use_login_bonus    => Bool(optional): Whether to apply the login bonus.    Defaults to 1 (apply).
     use_comeback_bonus => Bool(optional): Whether to apply the comeback bonus. Defaults to 1 (apply).
 
@@ -182,17 +182,17 @@ fun initial_character (ClassName $class) :Return(HashRef) {
 =cut
 
 fun apply_experience_bonus(ClassName $class,
-                           Int  :$base_exp,
-                           Int  :$last_update_epoch  = time(),
+                           Int  :$base_experience,
+                           Int  :$last_updated_epoch = time(),
                            Bool :$use_login_bonus    = $ENABLE_LOGIN_BONUS,
                            Bool :$use_duration_bonus = $ENABLE_DURATION_BONUS,
                            ) :Return(Int) {
 
-    my $experience = $base_exp;
+    my $experience = $base_experience;
 
     # login bonus
     if($use_login_bonus) {
-        my $last_update = localtime($last_update_epoch);
+        my $last_update = localtime($last_updated_epoch);
         my $today       = localtime(time());
         # If the last update was yesterday, apply the login bonus
         if ($last_update->ymd ne $today->ymd) {
@@ -202,7 +202,7 @@ fun apply_experience_bonus(ClassName $class,
 
     # duration bonus
     if($use_duration_bonus) {
-        my $duration = (time() - $last_update_epoch);
+        my $duration = (time() - $last_updated_epoch);
         if ($duration >= $DURATION_BONUS_START_SEC) {
             my $duration_bonus = $DURATION_BONUS_MULTIPLIER;
             # with Comeback bonus
@@ -219,7 +219,6 @@ fun apply_experience_bonus(ClassName $class,
     return $experience;
 }
 
-
 =head2 calculate_status
 
   Calculates the updated character level, status distribution, and job assignment based on experience points.
@@ -232,12 +231,13 @@ fun apply_experience_bonus(ClassName $class,
   Parameters:
     HashRef $status: A hash reference representing the character's current state. See also initial_character()
       Required keys:
-        exp          => Int: Total accumulated experience points.
-        level        => Int: Current character level.
-        gen          => Int: Current generation or reset count (retained, but not modified here).
-        last_update  => Int: UNIX timestamp of last update (retained, but not modified here).
-        status       => HashRef: Hash of current stat values. Keys: atk, def, ldr, agi, vit, skl.
-        job          => HashRef: Hash with current job information. Keys: name, score.
+        experience         => Int: Total accumulated experience points.
+        level              => Int: Current character level.
+        generation         => Int: Current generation or reset count (retained, but not modified here).
+        last_updated_epoch => Int: UNIX timestamp of last update (retained, but not modified here).
+        resume             => ArrayRef: Array of job names the character has previously held.
+        status             => HashRef: Hash of current stat values. Keys: atk, def, ldr, agi, vit, skl.
+        job                => HashRef: Hash with current job information. Keys: name, score.
 
   Returns:
     HashRef: A new hash reference representing the updated character.
@@ -252,7 +252,7 @@ fun calculate_status(ClassName $class, HashRef $character) :Return(HashRef) {
     my $level             = $character->{level};
 
     # level-up
-    my $expect_level  = $class->_experience_to_level($character->{exp});
+    my $expect_level  = $class->_experience_to_level($character->{experience});
     $updated->{level} = $expect_level if $expect_level > $level;
 
     # growth status points
@@ -314,8 +314,8 @@ fun calculate_status(ClassName $class, HashRef $character) :Return(HashRef) {
 =cut
 
 sub _experience_to_level {
-    my ($class, $exp) = @_;
-    return int($exp / $EXPERIENCE_PER_LEVEL) + 1;
+    my ($class, $experience) = @_;
+    return int($experience / $EXPERIENCE_PER_LEVEL) + 1;
 }
 
 =head2 _level_to_additional_status_points
@@ -353,8 +353,6 @@ sub _is_ascend {
 }
 
 =head1 LICENSE
-
-  Copyright (C) Likkradyus.
 
   This library is free software; you can redistribute it and/or modify
   it under the same terms as Perl itself.

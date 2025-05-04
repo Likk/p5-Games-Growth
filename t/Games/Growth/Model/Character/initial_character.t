@@ -18,7 +18,7 @@ describe 'Games::Growth::Model::Character#initial_character' => sub {
     it 'should return HashRef with expected keys' => sub {
         my $character = $hash->{character};
         ref_ok $character,                'HASH',                                            'is a hash reference';
-        is     [ sort keys %$character ], [qw/exp gen job last_update level resume status/], 'top-level keys are correct';
+        is     [ sort keys %$character ], [qw/experience generation job last_updated_epoch level resume status/], 'top-level keys are correct';
     };
 
     it 'should initialize status with default values' => sub {
@@ -37,8 +37,8 @@ describe 'Games::Growth::Model::Character#initial_character' => sub {
     it 'should set level, exp, gen to defaults' => sub {
         my $character = $hash->{character};
         is $hash->{character}->{level}, 1, 'level initialized to 1';
-        is $hash->{character}->{exp},   0, 'exp initialized to 0';
-        is $hash->{character}->{gen},   0, 'gen initialized to 0';
+        is $hash->{character}->{experience}, 0, 'experience initialized to 0';
+        is $hash->{character}->{generation}, 0, 'generation initialized to 0';
     };
 
     it 'should set job as a HashRef with name and score' => sub {
@@ -57,7 +57,7 @@ describe 'Games::Growth::Model::Character#initial_character' => sub {
 
     it 'should set last_update to current time (approximately)' => sub {
         my $character = $hash->{character};
-        like $character->{last_update}, qr/\A\d+\z/, 'last_update is epoch time';
+        like $character->{last_updated_epoch}, qr/\A\d+\z/, 'last_updated_epoch is epoch time';
     }
 };
 

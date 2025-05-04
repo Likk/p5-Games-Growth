@@ -12,15 +12,15 @@ use Games::Growth::Model::Character;
 describe 'about Games::Growth::Model::Character#calculate_status' => sub {
     my $hash;
 
-    describe 'character gains enough EXP to level up' => sub {
-        before_all "setup initial character with EXP for level 4" => sub {
+    describe 'character gains enough experience to level up' => sub {
+        before_all "setup initial character with experience for level 4" => sub {
             $hash->{character}                  = Games::Growth::Model::Character->initial_character();
-            $hash->{character}->{exp} = 2400;  # Enough for level 4 (assuming 800 exp per level)
+            $hash->{character}->{experience} = 2400;  # Enough for level 4 (assuming 800 experience per level)
         };
 
         it 'levels up without side effects and increases status points' => sub {
             is $hash->{character}->{level},          1,    'before calculate';
-            is $hash->{character}->{exp},            2400, 'before calculate';
+            is $hash->{character}->{experience},            2400, 'before calculate';
             is $hash->{character}->{status}->{atk} +
                $hash->{character}->{status}->{def} +
                $hash->{character}->{status}->{ldr} +
@@ -36,15 +36,15 @@ describe 'about Games::Growth::Model::Character#calculate_status' => sub {
         };
     };
 
-    describe 'character gains small EXP but does not level up' => sub {
-        before_all "setup character with insufficient EXP for next level" => sub {
+    describe 'character gains small experience but does not level up' => sub {
+        before_all "setup character with insufficient experience for next level" => sub {
             $hash->{character} = Games::Growth::Model::Character->initial_character();
-            $hash->{character}->{exp} = 799;  # Just below threshold for level 2
+            $hash->{character}->{experience} = 799;  # Just below threshold for level 2
         };
 
         it 'does not level up or change status' => sub {
             is $hash->{character}->{level},                     1, 'initial level';
-            is $hash->{character}->{exp},                     799, 'initial EXP';
+            is $hash->{character}->{experience},                     799, 'initial experience';
             is sum(values %{ $hash->{character}->{status} }),  30, 'initial status sum';
 
             my $updated = Games::Growth::Model::Character->calculate_status($hash->{character});
@@ -55,7 +55,7 @@ describe 'about Games::Growth::Model::Character#calculate_status' => sub {
     describe 'character reincarnates when status exceeds 50' => sub {
         before_all "setup character with high stats" => sub {
              $hash->{character} = Games::Growth::Model::Character->initial_character();
-             $hash->{character}->{exp}    = 105600 + 800;
+             $hash->{character}->{experience}    = 105600 + 800;
              $hash->{character}->{gen}    = 0;
              $hash->{character}->{level}  = 133;
              $hash->{character}->{status} = +{
@@ -77,7 +77,7 @@ describe 'about Games::Growth::Model::Character#calculate_status' => sub {
     describe 'case level up triggers job assignment' => sub {
         before_all 'prepare status close to job criteria' => sub {
             $hash->{character} = Games::Growth::Model::Character->initial_character();
-            $hash->{character}->{exp}    = 14400 + 800;
+            $hash->{character}->{experience}    = 14400 + 800;
             $hash->{character}->{level}  = 19;
             $hash->{character}->{status} = +{
                 atk => 11,
