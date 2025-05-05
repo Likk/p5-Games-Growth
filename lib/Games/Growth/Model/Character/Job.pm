@@ -94,12 +94,12 @@ our $JOB_LIST = +{
         threshold_point => [8, 18, 28, 38],
         distance        => [1,  2,  4,  6],
         entries => [
-            +{ params => [qw/atk/], names => [qw/Striker   Braveheart Berserker Ravager  /]},
-            +{ params => [qw/def/], names => [qw/Defender  Ironclad   Hoplite   Paladin  /]},
-            +{ params => [qw/ldr/], names => [qw/Commander Strategist General   Marshal  /]},
-            +{ params => [qw/agi/], names => [qw/Sprinter  Speedster  Phantom   Tempest  /]},
-            +{ params => [qw/vit/], names => [qw/Fighter   Warrior    Viking    Guardian /]},
-            +{ params => [qw/skl/], names => [qw/Duelist   Assassin   Slayer    Executor /]},
+            +{ params => [qw/atk/], names => [qw/Striker   Braveheart Berserker Ravager/  ]},
+            +{ params => [qw/def/], names => [qw/Defender  Ironclad   Hoplite   Paladin/  ]},
+            +{ params => [qw/ldr/], names => [qw/Enabler   Strategist Vanguard  Resonant/ ]},
+            +{ params => [qw/agi/], names => [qw/Sprinter  Speedster  Phantom   Tempest/  ]},
+            +{ params => [qw/vit/], names => [qw/Fighter   Warrior    Viking    Guardian/ ]},
+            +{ params => [qw/skl/], names => [qw/Duelist   Assassin   Slayer    Executor/ ]},
         ],
     },
     dual => +{
