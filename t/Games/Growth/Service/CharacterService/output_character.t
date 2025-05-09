@@ -95,7 +95,6 @@ describe 'about Games::Growth::Service::CharacterService#output_character' => su
                 is exists $updated_info->{status}, 1,    'should return updated status';
             };
         };
-
     };
 };
 

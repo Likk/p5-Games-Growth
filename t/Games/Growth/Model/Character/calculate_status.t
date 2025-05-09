@@ -2,6 +2,7 @@ use 5.40.0;
 use autodie;
 use utf8;
 
+use Clone qw/clone/;
 use List::Util qw/sum/;
 use Test2::V0;
 use Test2::Tools::Spec;
@@ -14,7 +15,7 @@ describe 'about Games::Growth::Model::Character#calculate_status' => sub {
 
     describe 'character gains enough experience to level up' => sub {
         before_all "setup initial character with experience for level 4" => sub {
-            $hash->{character}                  = Games::Growth::Model::Character->initial_character();
+            $hash->{character}               = Games::Growth::Model::Character->initial_character();
             $hash->{character}->{experience} = 2400;  # Enough for level 4 (assuming 800 experience per level)
         };
 
@@ -27,12 +28,12 @@ describe 'about Games::Growth::Model::Character#calculate_status' => sub {
                $hash->{character}->{status}->{agi} +
                $hash->{character}->{status}->{vit} +
                $hash->{character}->{status}->{skl},  30, 'before calculate';
-            my %character = %{$hash->{character}};
+            my $before_haracter = clone($hash->{character});
 
             my $updated = Games::Growth::Model::Character->calculate_status($hash->{character});
-            is %character,                                         %{$hash->{character}}, 'no side effects';
-            is $updated->{level},                                  4,                     'after calculate';
-            is sum(map { $_ - 5 } values %{ $updated->{status} }), 3 * 2,                 'gained 6 status points (3 levels * 2)';
+            is $before_haracter,                                   $hash->{character}, 'no side effects';
+            is $updated->{level},                                  4,                  'after calculate';
+            is sum(map { $_ - 5 } values %{ $updated->{status} }), 3 * 2,              'gained 6 status points (3 levels * 2)';
         };
     };
 
@@ -48,7 +49,7 @@ describe 'about Games::Growth::Model::Character#calculate_status' => sub {
             is sum(values %{ $hash->{character}->{status} }),  30, 'initial status sum';
 
             my $updated = Games::Growth::Model::Character->calculate_status($hash->{character});
-            is $updated, +{}, 'no update returned';
+            is $hash->{character}, $updated, 'not different';
         };
     };
 
@@ -70,7 +71,7 @@ describe 'about Games::Growth::Model::Character#calculate_status' => sub {
 
         it 'should reincarnate when any status exceeds 50' => sub {
             my $updated = Games::Growth::Model::Character->calculate_status($hash->{character});
-            is $updated, +{ gen => 1 }, 'generation incremented after reincarnation';
+            is $updated, +{ generation => 1 }, 'generation incremented after reincarnation';
         };
     };
 

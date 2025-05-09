@@ -1,6 +1,7 @@
 requires 'Function::Parameters';
 requires 'Function::Return';
 requires 'Types::Standard';
+requires 'Hash::Diff';
 
 on 'develop' => sub {
     requires 'Data::Dumper';

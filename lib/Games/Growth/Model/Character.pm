@@ -2,6 +2,7 @@ package Games::Growth::Model::Character;
 use 5.40.0;
 use utf8;
 
+use Clone qw/clone/;
 use Function::Parameters;
 use Function::Return;
 use Types::Standard -types;
@@ -247,7 +248,7 @@ fun apply_experience_bonus(ClassName $class,
 =cut
 
 fun calculate_status(ClassName $class, HashRef $character) :Return(HashRef) {
-    my $updated           = +{};
+    my $updated           = clone($character);
     my $initial_character = $class->initial_character();
     my $level             = $character->{level};
 
@@ -267,17 +268,16 @@ fun calculate_status(ClassName $class, HashRef $character) :Return(HashRef) {
     if ($update_status_count > 0) {
         for (1.. $update_status_count) {
             my $target_status = [List::Util::shuffle(qw/atk def ldr agi vit skl/)]->[0];
-            $character->{status}->{$target_status}++;
+            $updated->{status}->{$target_status}++;
         }
-        $updated->{status} = $character->{status};
     }
 
     # any status exceeds the maximum value
     # return only generation
-    my $is_ascend = $class->_is_ascend($character->{status});
+    my $is_ascend = $class->_is_ascend($updated->{status});
     if ($is_ascend) {
-        my $generation = $character->{gen} + 1;
-        return +{ gen => $generation };
+        my $generation = ($character->{generation} || 0) +1;
+        return +{ generation => $generation };
     }
 
     # job assignment
@@ -285,12 +285,10 @@ fun calculate_status(ClassName $class, HashRef $character) :Return(HashRef) {
         my $job_status = Games::Growth::Model::Character::Job->search_job($updated->{status});
         if(exists $job_status->{name}  &&
            exists $job_status->{score} &&
-           $job_status->{score} > $character->{job}->{score}
+           $job_status->{score} > $updated->{job}->{score}
         ){
-            my $resume = $character->{resume} || [];
-            push @$resume, $job_status->{name};
-            $updated->{job}      = $job_status;
-            $updated->{resume}   = $resume;
+            $updated->{job} = $job_status;
+            push @{$updated->{resume}}, $job_status->{name} if $job_status->{name}
         }
     }
     return $updated;

@@ -5,6 +5,7 @@ use utf8;
 
 use Function::Parameters;
 use Function::Return;
+use Hash::Diff;
 use Types::Standard -types;
 
 use Games::Growth::Model::Character;
@@ -253,25 +254,10 @@ method calculate_status($self:) :Return(Games::Growth::Service::CharacterService
         die "character not set.: $e";
     }
 
-    my $updated   = Games::Growth::Model::Character->calculate_status($character);
+    my $updated = Games::Growth::Model::Character->calculate_status($character);
+    my $diff = Hash::Diff::diff($updated, $character);
 
-    # level
-    $character->{level}  = $updated->{level} if $updated->{level};
-
-    # status
-    if($updated->{status}){
-        for my $key (keys %{$updated->{status}}){
-            $character->{status}->{$key} = $updated->{status}->{$key}
-        }
-    }
-
-    # job assignment
-    if($updated->{job}){
-        $character->{job}    = $updated->{job};
-        $character->{resume} = $updated->{resume};
-    }
-
-    $self->character($character);
-    $self->updated_info($updated);
+    $self->character($updated);
+    $self->updated_info($diff);
     return $self;
 }
