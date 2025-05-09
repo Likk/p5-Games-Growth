@@ -3,6 +3,7 @@ package Games::Growth::Service::CharacterService;
 use 5.40.0;
 use utf8;
 
+use Clone qw(clone);
 use Function::Parameters;
 use Function::Return;
 use Hash::Diff;
@@ -255,6 +256,20 @@ method calculate_status($self:) :Return(Games::Growth::Service::CharacterService
     }
 
     my $updated = Games::Growth::Model::Character->calculate_status($character);
+
+    # special case for ascension
+    if($updated->{generation} != $character->{generation}) {
+        # initialize experience, job, level and status
+        my $ascended_character = Games::Growth::Model::Character->initial_character();
+        # carry over generation, last_updated_epoch and resume
+        $ascended_character->{last_updated_epoch} = clone($character->{last_updated_epoch});
+        $ascended_character->{resume}             = clone($character->{resume});
+        $ascended_character->{generation}         = $updated->{generation}; # incremented generation
+
+        $self->character($ascended_character);
+        $self->updated_info({generation => $updated->{generation}});
+        return $self;
+    }
     my $diff = Hash::Diff::diff($updated, $character);
 
     $self->character($updated);
