@@ -89,8 +89,9 @@ use List::Util qw/shuffle min max/;
 
 =cut
 
-our $JOB_LIST = +{
-    single => +{
+our $JOB_LIST = [
+    {
+        name            => 'single_professional',
         threshold_point => [8, 18, 28, 38],
         distance        => [1,  2,  4,  6],
         entries => [
@@ -102,7 +103,8 @@ our $JOB_LIST = +{
             +{ params => [qw/skl/], names => [qw/Duelist   Assassin   Slayer    Executor/ ]},
         ],
     },
-    dual => +{
+    {
+        name            => 'dual_professional',
         threshold_point => [12, 22, 42],
         distance        => [ 2,  3,  4],
         entries => [
@@ -123,14 +125,15 @@ our $JOB_LIST = +{
             +{ params => [qw/vit skl/], names => [qw/Binder    Counter     Trickster/   ]},
         ],
     },
-    generalist => +{
+    {
+        name            => 'generalist',
         threshold_point => [10, 20, 30, 40],
         distance        => [3,   5,  5,  5], # max - min
         entries => [ #all parameter
             +{ params => [qw//], names => [qw/Balancer Harmonizer Polymath Hero/]},
         ],
     },
-};
+];
 
 
 =head2 INITIAL_JOB
@@ -192,16 +195,10 @@ fun initial_job(ClassName $class) :Return(HashRef) {
 
 fun search_job(ClassName $class, HashRef $status) :Return(HashRef) {
     my $job_list = [];
-    {
-        my $job_status = $class->search_single_professional($status);
-        push @$job_list, $job_status if exists $job_status->{name};
-    }
-    {
-        my $job_status = $class->search_dual_professional($status);
-        push @$job_list, $job_status if exists $job_status->{name};
-    }
-    {
-        my $job_status = $class->search_generalist($status);
+    for my $category (@$JOB_LIST) {
+        my $category_name = $category->{name};
+        my $method        = "search_$category_name";
+        my $job_status = $class->$method($status);
         push @$job_list, $job_status if exists $job_status->{name};
     }
 
@@ -246,9 +243,10 @@ fun search_job(ClassName $class, HashRef $status) :Return(HashRef) {
 sub search_single_professional {
     my ($class, $status) = @_;
     my $job_list = [];
-    my $entries         = $JOB_LIST->{single}->{entries};
-    my $threshold_point = $JOB_LIST->{single}->{threshold_point};
-    my $distance        = $JOB_LIST->{single}->{distance};
+    my $single_professional = [grep { $_->{name} eq 'single_professional' } @$JOB_LIST]->[0];
+    my $entries             = $single_professional->{entries};
+    my $threshold_point     = $single_professional->{threshold_point};
+    my $distance            = $single_professional->{distance};
 
     for my $entry (@$entries) {
         my $params = $entry->{params};
@@ -331,9 +329,10 @@ sub search_single_professional {
 sub search_dual_professional {
     my ($class, $status) = @_;
     my $job_list = [];
-    my $entries         = $JOB_LIST->{dual}->{entries};
-    my $threshold_point = $JOB_LIST->{dual}->{threshold_point};
-    my $distance        = $JOB_LIST->{dual}->{distance};
+    my $dual_professional = [grep { $_->{name} eq 'dual_professional' } @$JOB_LIST]->[0];
+    my $entries           = $dual_professional->{entries};
+    my $threshold_point   = $dual_professional->{threshold_point};
+    my $distance          = $dual_professional->{distance};
 
     for my $entry (@$entries) {
         my $params = $entry->{params};
@@ -417,10 +416,10 @@ sub search_dual_professional {
 sub search_generalist {
     my ($class, $status) = @_;
     my $job_list = [];
-
-    my $entries         = $JOB_LIST->{generalist}->{entries};
-    my $threshold_point = $JOB_LIST->{generalist}->{threshold_point};
-    my $distance        = $JOB_LIST->{generalist}->{distance};
+    my $generalist      = [grep { $_->{name} eq 'generalist' } @$JOB_LIST]->[0];
+    my $entries         = $generalist->{entries};
+    my $threshold_point = $generalist->{threshold_point};
+    my $distance        = $generalist->{distance};
     my $min = List::Util::min(values %$status);
     my $max = List::Util::max(values %$status);
 
