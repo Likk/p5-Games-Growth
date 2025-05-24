@@ -67,7 +67,7 @@ local $Games::Growth::Model::Character::Job::JOB_LIST = +[ # 職業リスト。�
             +{ params => [qw//], names => [qw/バランサー ハーモナイザー オールマイティ ヒーロー/], },
         ],
     },
-};
+];
 
 local $Games::Growth::Model::Character::Job::JOB_LIST::INITIAL_JOB = +{
     name  => 'ルーキー',
