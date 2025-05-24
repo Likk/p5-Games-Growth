@@ -23,8 +23,9 @@ use utf8;
 
 =cut
 
-local $Games::Growth::Model::Character::Job::JOB_LIST = +{ # 職業リスト。適当にいじってください
-    single => +{
+local $Games::Growth::Model::Character::Job::JOB_LIST = +[ # 職業リスト。適当にいじってください
+    +{
+        name            => 'single_professional',
         threshold_point => [8, 18, 28, 38],
         distance        => [1,  2,  4,  6],
         entries => [
@@ -36,7 +37,8 @@ local $Games::Growth::Model::Character::Job::JOB_LIST = +{ # 職業リスト。�
             +{ params => [qw/skl/], names => [qw/デュエリスト   アサイラント    スレイヤー      エグゼキュータ/]}, # 技術特化
         ],
     },
-    dual => +{
+    +{
+        name            => 'dual_professional',
         threshold_point => [12, 22, 42],
         distance        => [ 2,  3,  4],
         entries => [
@@ -57,7 +59,8 @@ local $Games::Growth::Model::Character::Job::JOB_LIST = +{ # 職業リスト。�
             +{ params => [qw/vit skl/], names => [qw/バインダー       カウンター          トリックスター/   ]},
         ],
     },
-    generalist => +{
+    +{
+        name            => 'generalist',
         threshold_point => [10, 20, 30, 40],
         distance        => [3,   5,  5,  5], # max - min
         entries => [ #all parameter
