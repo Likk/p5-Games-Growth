@@ -285,7 +285,10 @@ fun calculate_status(ClassName $class, HashRef $character) :Return(HashRef) {
         my $job_status = Games::Growth::Model::Character::Job->search_job($updated->{status});
         if(exists $job_status->{name}  &&
            exists $job_status->{score} &&
-           $job_status->{score} > $updated->{job}->{score}
+           (
+               $job_status->{score} == -1                  || # -1 means special job, so always update
+               $job_status->{score} > $updated->{job}->{score}
+           )
         ){
             $updated->{job} = $job_status;
             push @{$updated->{resume}}, $job_status->{name} if $job_status->{name}
