@@ -6,7 +6,7 @@ use utf8;
 use Function::Parameters;
 use Function::Return;
 use Types::Standard -types;
-use List::Util qw/shuffle min max/;
+use List::Util qw/shuffle min max uniq/;
 
 =head1 NAME
 
@@ -133,6 +133,37 @@ our $JOB_LIST = [
             +{ params => [qw//], names => [qw/Balancer Harmonizer Polymath Hero/]},
         ],
     },
+    # specially job
+    {
+        name            => 'primalist',
+        threshold_point => [-1],
+        entries => [ #all parameter
+            +{ params => [qw//], names => [qw/Primal/]},
+        ],
+    },
+    {
+        name            => 'stepper',
+        threshold_point => [-1],
+        distance        => [2],
+        entries => [ #all parameter
+            +{ params => [qw//], names => [qw/Stepper/]},
+        ],
+    },
+    {
+        name            => 'repdigit',
+        threshold_point => [-1],
+        entries => [ #all parameter
+            +{ params => [qw//], names => [qw/Syncher/]},
+        ],
+    },
+    {
+        name            => 'equalist',
+        threshold_point => [-1],
+        entries => [ #all parameter
+            +{ params => [qw//], names => [qw/Libra/]},
+        ],
+    }
+
 ];
 
 
@@ -182,6 +213,7 @@ fun initial_job(ClassName $class) :Return(HashRef) {
 
   search_job() evaluates a character's status and determines the most suitable job based on predefined conditions.
   It checks for three types of job matches - dual-professional, single-professional, and generalist - and returns the job with the highest score.
+  It checks for special types of job maches - primalist, stepper, repdigit, and equalist - and returns the job with `-1` score.
 
   Parameters:
     HashRef $status: A hash reference containing the character's status parameters.
@@ -203,7 +235,14 @@ fun search_job(ClassName $class, HashRef $status) :Return(HashRef) {
     }
 
     # 3タイプのスコアが被ることはないはず
-    for my $job (sort { $b->{score} <=> $a->{score} } @$job_list) {
+    for my $job (sort {
+            # - -1 is a special value for the score ( top priority )
+            # - sort by score ascending order
+            defined $b->{score} && $b->{score} == -1 ? 1  :
+            defined $a->{score} && $a->{score} == -1 ? -1 :
+            $b->{score}  <=> $a->{score}
+        } @$job_list)
+    {
         return +{
             name =>  $job->{name},
             score => $job->{score},
@@ -463,5 +502,206 @@ sub search_generalist {
             rand()      <=> rand()
         } @$job_list
     ];
+    return $job_list->[0];
+}
+
+=head2 search_primalist
+
+  search_primalist() evaluates whether all status parameters are unique prime numbers and determines a primalist-type job.
+  This is a special job that is not based on any specific parameter but rather on the overall status of the character.
+
+  Parameters:
+    HashRef $status: A hash reference containing the character's status parameters.
+
+  Returns:
+    HashRef: A hash reference containing the job name.
+      name  => String: The name of the matched job.
+
+=head3 Note:
+
+  The selection criteria for primalist jobs are based on numerical properties of the parameter values.
+  - All six parameter values must be:
+    - Prime numbers (excluding 0 and 1)
+    - Pairwise distinct (no duplicates allowed)
+  - If the character meets these criteria, a primalist job is awarded.
+
+=cut
+
+sub search_primalist {
+    my ($class, $status) = @_;
+    my $job_list        = [];
+    my $primalist       = [grep { $_->{name} eq 'primalist' } @$JOB_LIST]->[0];
+    my $entries         = $primalist->{entries};
+    my $threshold_point = $primalist->{threshold_point};
+
+    my $prime_numbers = [
+        grep {
+            $_ !~ /^(?:1|0)$/
+        }
+        grep {
+            (1 x $_) !~ /^(11+)\1+$/
+        }
+        ( $Games::Growth::Model::Character::DEFAULT_STATUS_VALUE..$Games::Growth::Model::Character::MAX_STATUS_VALUE )
+    ];
+    my $prime_numbers_hash = { map { $_ => 1 } @$prime_numbers };
+    my $status_list        = [sort values %$status];
+
+    my @intersection = grep {
+        delete $prime_numbers_hash->{$_}
+    } @$status_list;
+
+    for my $entry (@$entries) {
+        my $names  = $entry->{names};
+
+        push @$job_list , +{
+            name  => $names->[0],
+            score => $threshold_point->[0],
+        }
+        if scalar @intersection >= scalar @$status_list;
+    }
+
+    return $job_list->[0];
+}
+
+
+=head2 search_stepper
+
+  search_stepper() evaluates whether all status parameters form a uniformly spaced arithmetic sequence and determines a stepper-type job.
+
+  Parameters:
+    HashRef $status: A hash reference containing the character's status parameters.
+
+  Returns:
+    HashRef: A hash reference containing the job name and score.
+      name  => String: The name of the matched job.
+      score => Int:    The score associated with the job.
+
+=head3 Note:
+
+  The selection criteria for stepper jobs are based on the structure of the parameter values:
+  - All six parameter values must be unique.
+  - The values must form a strictly increasing arithmetic sequence.
+    - The difference between consecutive values must be constant.
+    - The minimum required step size is defined by the job's configuration (e.g., 1 or greater).
+  - If these conditions are met, a stepper job is awarded.
+
+=cut
+
+sub search_stepper {
+    my ($class, $status) = @_;
+    my $job_list        = [];
+    my $stepper         = [grep { $_->{name} eq 'stepper' } @$JOB_LIST]->[0];
+    my $entries         = $stepper->{entries};
+    my $threshold_point = $stepper->{threshold_point};
+
+    # all status must be unique.
+    my $status_list    = [uniq sort { $a <=> $b } values %$status];
+    return {} if scalar @$status_list < scalar values %$status;
+
+    my $prev_status    = shift @$status_list;
+    my $base_diff      = $status_list->[0] - $prev_status;
+    return {} if $base_diff < $stepper->{distance}->[0];
+
+    for my $s (@$status_list) {
+        my $diff = $s - $prev_status;
+        return +{} if $diff != $base_diff;
+        $prev_status = $s;
+    }
+
+    push @$job_list , +{
+        name  => $entries->[0]->{names}->[0],
+        score => $threshold_point->[0],
+    };
+
+    return $job_list->[0];
+}
+
+=head2 search_repdigit
+
+  search_repdigit() evaluates whether all status parameters are repdigit numbers and determines a repdigit-type job.
+
+  Parameters:
+    HashRef $status: A hash reference containing the character's status parameters.
+
+  Returns:
+    HashRef: A hash reference containing the job name and score.
+      name  => String: The name of the matched job.
+      score => Int:    The score associated with the job.
+
+=head3 Note:
+
+  The selection criteria for repdigit jobs are purely numerical and visually distinctive:
+  - All six parameter values must be repdigits.
+    - A repdigit is a number where all digits are the same (e.g., 11, 22, 111).
+  - The repdigit values do not need to be identical across parameters.
+    - For example, a status set like { str => 11, dex => 22, int => 33, ... } still qualifies.
+  - If any parameter fails this pattern, the condition is not satisfied and no job is assigned.
+
+=cut
+
+sub search_repdigit {
+    my ($class, $status) = @_;
+    my $job_list        = [];
+    my $repdigit        = [grep { $_->{name} eq 'repdigit' } @$JOB_LIST]->[0];
+    my $entries         = $repdigit->{entries};
+    my $threshold_point = $repdigit->{threshold_point};
+
+    for my $value (values %$status) {
+        return +{} if $value !~ /^(\d)\1+$/; # check if all digits are the same
+    }
+
+    push @$job_list , +{
+        name  => $entries->[0]->{names}->[0],
+        score => $threshold_point->[0],
+    };
+
+    return $job_list->[0];
+}
+
+=head2 search_equalist
+
+  search_same() evaluates whether all status parameters have the exact same two-digit value,
+  excluding repdigits, and determines a same-value-type job.
+
+  Parameters:
+    HashRef $status: A hash reference containing the character's status parameters.
+
+  Returns:
+    HashRef: A hash reference containing the job name and score.
+      name  => String: The name of the matched job.
+      score => Int:    The score associated with the job.
+
+=head3 Note:
+
+  The selection criteria for this job require:
+  - All six parameter values must be identical.
+  - The value must be a valid two-digit number (i.e., between 12 and 49).
+  - The value must not be a repdigit (e.g., 11, 22, etc. are disallowed).
+    - This job is considered only when the uniform value is not visually
+    - Repdigit values are handled by C<search_repdigit()> instead.
+
+  For example:
+    - { str => 42, dex => 42, int => 42, ... } -> qualifies
+    - { str => 11, dex => 11, int => 11, ... } -> does not qualify (handled by repdigit)
+
+=cut
+
+sub search_equalist {
+    my ($class, $status) = @_;
+    my $job_list        = [];
+    my $same            = [grep { $_->{name} eq 'equalist' } @$JOB_LIST]->[0];
+    my $entries         = $same->{entries};
+    my $threshold_point = $same->{threshold_point};
+
+    return + {} if scalar(uniq values %$status) != 1;
+    my $sample = [values %$status]->[0];
+    return +{} if $sample !~ /^\d\d$/;
+    return +{} if $sample =~ /^(\d)\1+$/; # prioritize repdigit
+
+    push @$job_list , +{
+        name  => $entries->[0]->{names}->[0],
+        score => $threshold_point->[0],
+    };
+
     return $job_list->[0];
 }

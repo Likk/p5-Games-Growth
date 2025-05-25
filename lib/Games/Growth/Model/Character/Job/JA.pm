@@ -23,7 +23,7 @@ use utf8;
 
 =cut
 
-local $Games::Growth::Model::Character::Job::JOB_LIST = +[ # 職業リスト。適当にいじってください
+$Games::Growth::Model::Character::Job::JOB_LIST = +[ # 職業リスト。適当にいじってください
     +{
         name            => 'single_professional',
         threshold_point => [8, 18, 28, 38],
@@ -62,14 +62,43 @@ local $Games::Growth::Model::Character::Job::JOB_LIST = +[ # 職業リスト。�
     +{
         name            => 'generalist',
         threshold_point => [10, 20, 30, 40],
-        distance        => [3,   5,  5,  5], # max - min
+        distance        => [3,   3,  3,  3], # max - min
         entries => [ #all parameter
             +{ params => [qw//], names => [qw/バランサー ハーモナイザー オールマイティ ヒーロー/], },
         ],
     },
+    {
+        name            => 'primalist',
+        threshold_point => [-1],
+        entries => [ #all parameter
+            +{ params => [qw//], names => [qw/プライマル/]},
+        ],
+    },
+    {
+        name            => 'stepper',
+        threshold_point => [-1],
+        distance        => [2],
+        entries => [ #all parameter
+            +{ params => [qw//], names => [qw/ペンデュラム/]},
+        ],
+    },
+    {
+        name            => 'repdigit',
+        threshold_point => [-1],
+        entries => [ #all parameter
+            +{ params => [qw//], names => [qw/ゾロ/]},
+        ],
+    },
+    {
+        name            => 'equalist',
+        threshold_point => [-1],
+        entries => [ #all parameter
+            +{ params => [qw//], names => [qw/レギュレータ/]},
+        ],
+    }
 ];
 
-local $Games::Growth::Model::Character::Job::JOB_LIST::INITIAL_JOB = +{
+$Games::Growth::Model::Character::Job::JOB_LIST::INITIAL_JOB = +{
     name  => 'ルーキー',
     score => 0,
 };
